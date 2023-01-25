@@ -1,0 +1,74 @@
+version: "3.9"
+services:
+  spark-master:
+    build: 
+      context: MASTER 
+      dockerfile: Dockerfile
+    container_name: spark-master
+    hostname: spark-master
+    tty: true
+    stdin_open: true
+    ports:
+      - "8080:8080"
+      - "7077:7077"
+      - "54310:54310"
+      - "22:22"
+    networks:
+      - spark-network
+    volumes:
+      - ./ressources/:/ressources/
+  spark-worker0:
+    build:
+      context: WORKER
+      dockerfile: Dockerfile
+    container_name: spark-worker0
+    hostname: spark-worker0
+    tty: true
+    stdin_open: true
+    depends_on:
+      - spark-master
+    networks:
+      - spark-network
+  spark-worker1:
+    build:
+      context: WORKER
+      dockerfile: Dockerfile
+    container_name: spark-worker1
+    hostname: spark-worker1
+    tty: true
+    stdin_open: true
+    depends_on:
+      - spark-master
+    networks:
+      - spark-network
+  spark-worker2:
+    build:
+      context: WORKER
+      dockerfile: Dockerfile
+    container_name: spark-worker2
+    hostname: spark-worker2
+    tty: true
+    stdin_open: true
+    depends_on:
+      - spark-master
+    networks:
+      - spark-network
+  spark-worker3:
+    build:
+      context: WORKER
+      dockerfile: Dockerfile
+    container_name: spark-worker3
+    hostname: spark-worker3
+    tty: true
+    stdin_open: true
+    depends_on:
+      - spark-master
+    networks:
+      - spark-network
+networks:
+  spark-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
