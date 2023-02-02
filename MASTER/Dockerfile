@@ -1,6 +1,9 @@
 FROM ubuntu:22.10
-RUN apt-get update && apt-get install -y locales default-jdk scala git wget curl python3 vim ssh && rm -rf /var/lib/apt/lists/* \
-	&& localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
+RUN apt-get update && apt-get install -y locales default-jdk scala git wget curl python3 ssh python3-pip \
+        && rm -rf /var/lib/apt/lists/* \
+    	&& localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 \
+        && pip3 install numpy \
+        && pip3 install hdfs
 ENV LANG en_US.utf8
 WORKDIR /home
 ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
@@ -21,6 +24,7 @@ RUN mv spark-3.3.1-bin-hadoop3 /opt/spark
 ENV SPARK_HOME=/opt/spark
 ENV PATH=$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin
 ENV PYSPARK_PYTHON=/usr/bin/python3
+ENV PATH=$PATH:/ressources/scripts
 # ssh configuration
 COPY ssh/id_rsa /root/.ssh/id_rsa
 COPY ssh/authorized_keys /root/.ssh/authorized_keys
