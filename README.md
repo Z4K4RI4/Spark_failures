@@ -30,7 +30,7 @@ Ce projet a pour but de tester différents scénarios de panne sur un cluster Sp
 * Vérifier que le cluster est bien lancé :  
 ```$ docker-compose ps```
 * Se connecter au master :  
-```$ docker exec -it master bash```
+```$ docker-compose exec -it master bash```
 * S'assurer que le cluster est bien lancé :  
 ```$ jps```
 * Accéder à l'interface web de Spark : http://172.20.0.2:8080
