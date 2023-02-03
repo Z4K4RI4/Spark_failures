@@ -8,6 +8,11 @@ Ce projet a pour but de tester différents scénarios de panne sur un cluster Sp
 ```$ git clone https://github.com/Z4K4RI4/Spark_failures.git```
 * Se placer dans le dossier du projet  
 ```$ cd Spark_failures```
+#### Préparation de Spark et Hadoop
+##### Avec le script de configuration
+* le fichier config.sh permet de réaliser le téléchargement de Spark et Hadoop, et de configurer les fichiers de configuration.
+```./config.sh```
+#### Manuellement
 * Télécharger les archives de Spark et Hadoop  
 ```$ wget "https://archive.apache.org/dist/hadoop/common/hadoop-3.3.3/hadoop-3.3.3.tar.gz" && tar -xvf hadoop-3.3.3.tar.gz && rm hadoop-3.3.3.tar.gz```  
 ```$ wget "https://dlcdn.apache.org/spark/spark-3.3.1/spark-3.3.1-bin-hadoop3.tgz" && tar -xvf spark-3.3.1-bin-hadoop3.tgz && rm spark-3.3.1-bin-hadoop3.tgz```  
