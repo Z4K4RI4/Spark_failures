@@ -1,5 +1,5 @@
 FROM ubuntu:22.10
-RUN apt-get update && apt-get install -y locales default-jdk scala git wget curl python3 ssh python3-pip \
+RUN apt-get update && apt-get install -y locales openjdk-11-jdk default-jdk scala git wget curl python3 ssh python3-pip \
         && rm -rf /var/lib/apt/lists/* \
     	&& localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 \
         && pip3 install numpy \
