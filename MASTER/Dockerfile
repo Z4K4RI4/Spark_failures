@@ -1,4 +1,4 @@
-FROM ubuntu:22.10
+FROM ubuntu:22.04
 RUN apt-get update && apt-get install -y locales openjdk-11-jdk default-jdk scala git wget curl python3 ssh python3-pip \
         && rm -rf /var/lib/apt/lists/* \
     	&& localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 \
@@ -30,5 +30,6 @@ COPY ssh/id_rsa /root/.ssh/id_rsa
 COPY ssh/authorized_keys /root/.ssh/authorized_keys
 RUN bash -c "eval "$(ssh-agent -s)" && ssh-add /root/.ssh/id_rsa"
 #ENTRYPOINT bash -c "start-master.sh && tail -f /dev/null"
-ENTRYPOINT bash -c "service ssh start && hdfs namenode -format && start-dfs.sh && hdfs dfs -mkdir /input && start-master.sh && tail -f /dev/null"
+ENTRYPOINT bash -c "service ssh start && tail -f /dev/null"
+#        && hdfs namenode -format && start-dfs.sh && hdfs dfs -mkdir /input && start-master.sh \
 EXPOSE 8080
