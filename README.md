@@ -176,12 +176,14 @@ Le résultat est sauvegardé dans le dossier `ressources/outputTrue`.
 ## Panne d'un Datanode  
 Le caintainer `spark-worker1` est arrêté avec la commande ```$ docker compose stop spark-worker1```.
 La commande ```$ hdfs dfsadmin -report``` donne le même résultat qu'initialement. Le datanode associé au spark-worker1 est toujours présent dans le rapport.  
-
+Après l'arrêt du datanode, le script est relancé. Le résultat est sauvegardé dans le dossier `ressources/outputDatanodeDown`.  
+Le résultat est le même que précédemment. La réplication des données a fonctionné normalement.  
 ## Panne d'un Spark Worker
 ### Panne d'un worker sans travail en cours  
 Le caintainer `spark-worker1` est arrêté avec la commande ```$ docker compose stop spark-worker1```.
 La commande ```$ hdfs dfsadmin -report``` donne le même résultat qu'initialement. Le datanode associé au spark-worker1 est toujours présent dans le rapport.
-Le script est relancé après l'arrêt du worker. Le résultat est sauvegardé dans le dossier `ressources/outputWorkerDown`.
+Le script est relancé après l'arrêt du worker. Le résultat est sauvegardé dans le dossier `ressources/outputWorkerDown`.  
+Le résultat est le même que précédemment. Spark a fonctionné normalement avec un Worker en moins.  
 ### Panne d'un worker avec un travail en cours  
 Le caintainer `spark-worker2` est arrêté avec la commande ```$ docker compose stop spark-worker2```, après avoir lancé le script `char_count.py`.  
 La panne apparait dans la sortie de Spark, au travers d'un "WARN TransportChannelHandler"' :  
@@ -222,8 +224,107 @@ java.io.IOException: Connection reset by peer
 23/02/06 18:36:40 INFO BlockManagerMaster: Removed 0 successfully in removeExecutor
 ```
 Le résultat est sauvegardé dans le dossier `ressources/outputWorkerDownWithJob`.  
-
+Le résultat est le même que précédemment. Spark a fonctionné normalement avec un Worker en moins.  
+Spark a pu continuer à fonctionner avec un Worker en moins, car il a pu répartir les tâches sur les Workers restants.  
 ## Panne du Namenode  
 Le processus du Namenode est arrêté depuis le container `spark-master`.
-Le processus est sur le 
-## Panne du Master  
+Il s'agit ici du processus 246 :  
+```
+root@spark-master:/home# jps
+854 Worker
+4470 Jps
+246 NameNode
+745 Master
+589 SecondaryNameNode
+```
+Il est alors impossible de lancer le script :  
+```
+py4j.protocol.Py4JJavaError: An error occurred while calling z:org.apache.spark.api.python.PythonRDD.collectAndServe.
+: java.net.ConnectException: Call From spark-master/172.20.0.2 to spark-master:54310 failed on connection exception: java.net.ConnectException: Connection refused; For more details see:  http://wiki.apache.org/hadoop/ConnectionRefused
+```
+Après avoir relancer le namenode, le rapport est le suivant : 
+```
+root@spark-master:/home# hdfs dfsadmin -report
+Configured Capacity: 1507817226240 (1.37 TB)
+Present Capacity: 45941216598 (42.79 GB)
+DFS Remaining: 18644025344 (17.36 GB)
+DFS Used: 27297191254 (25.42 GB)
+DFS Used%: 59.42%
+Replicated Blocks:
+	Under replicated blocks: 0
+	Blocks with corrupt replicas: 0
+	Missing blocks: 0
+	Missing blocks (with replication factor 1): 0
+	Low redundancy blocks with highest priority to recover: 0
+	Pending deletion blocks: 0
+Erasure Coded Block Groups:
+	Low redundancy block groups: 0
+	Block groups with corrupt internal blocks: 0
+	Missing block groups: 0
+	Low redundancy blocks with highest priority to recover: 0
+	Pending deletion blocks: 0
+
+-------------------------------------------------
+Live datanodes (3):
+
+Name: 172.20.0.2:9866 (spark-master)
+Hostname: spark-master
+Decommission Status : Normal
+Configured Capacity: 502605742080 (468.09 GB)
+DFS Used: 13648562859 (12.71 GB)
+Non DFS Used: 457136244053 (425.74 GB)
+DFS Remaining: 6214696960 (5.79 GB)
+DFS Used%: 2.72%
+DFS Remaining%: 1.24%
+Configured Cache Capacity: 0 (0 B)
+Cache Used: 0 (0 B)
+Cache Remaining: 0 (0 B)
+Cache Used%: 100.00%
+Cache Remaining%: 0.00%
+Xceivers: 0
+Last contact: Mon Feb 06 19:18:48 GMT 2023
+Last Block Report: Mon Feb 06 19:18:18 GMT 2023
+Num of Blocks: 101
+
+
+Name: 172.20.0.5:9866 (spark-worker3.00_miniprojet_spark-network)
+Hostname: spark-worker3
+Decommission Status : Normal
+Configured Capacity: 502605742080 (468.09 GB)
+DFS Used: 6749555371 (6.29 GB)
+Non DFS Used: 464035284309 (432.17 GB)
+DFS Remaining: 6214664192 (5.79 GB)
+DFS Used%: 1.34%
+DFS Remaining%: 1.24%
+Configured Cache Capacity: 0 (0 B)
+Cache Used: 0 (0 B)
+Cache Remaining: 0 (0 B)
+Cache Used%: 100.00%
+Cache Remaining%: 0.00%
+Xceivers: 0
+Last contact: Mon Feb 06 19:18:50 GMT 2023
+Last Block Report: Mon Feb 06 19:18:20 GMT 2023
+Num of Blocks: 50
+
+
+Name: 172.20.0.6:9866 (spark-worker0.00_miniprojet_spark-network)
+Hostname: spark-worker0
+Decommission Status : Normal
+Configured Capacity: 502605742080 (468.09 GB)
+DFS Used: 6899073024 (6.43 GB)
+Non DFS Used: 463885766656 (432.03 GB)
+DFS Remaining: 6214664192 (5.79 GB)
+DFS Used%: 1.37%
+DFS Remaining%: 1.24%
+Configured Cache Capacity: 0 (0 B)
+Cache Used: 0 (0 B)
+Cache Remaining: 0 (0 B)
+Cache Used%: 100.00%
+Cache Remaining%: 0.00%
+Xceivers: 0
+Last contact: Mon Feb 06 19:18:50 GMT 2023
+Last Block Report: Mon Feb 06 19:18:20 GMT 2023
+Num of Blocks: 51
+```
+Le script est relancé, les résultats sont sauvegardés dans le dossier `ressources/outputNamenodeDown`.
+Le résultat est le même que précédemment. Le Namenode a bien repris son fonctionnement après avoir été relancé.
