@@ -1,9 +1,10 @@
-FROM ubuntu:22.04
-RUN apt-get update && apt-get install -y locales openjdk-11-jdk default-jdk scala git wget curl python3 ssh python3-pip \
-        && rm -rf /var/lib/apt/lists/* \
-    	&& localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 \
-        && pip3 install numpy \
-        && pip3 install hdfs
+FROM ubuntu
+RUN apt-get update
+RUN apt-get install -y locales openjdk-11-jdk scala git wget curl python3 ssh python3-pip
+RUN rm -rf /var/lib/apt/lists/*
+RUN localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
+#RUN pip3 install numpy
+#RUN pip3 install hdfs
 ENV LANG en_US.utf8
 WORKDIR /home
 ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
