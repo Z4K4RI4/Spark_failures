@@ -168,14 +168,59 @@ Last contact: Mon Feb 06 18:20:20 GMT 2023
 Last Block Report: Mon Feb 06 18:01:49 GMT 2023
 Num of Blocks: 49
 ```  
+La commande `hdfs fsck hdfs://spark-master:54310/input/bigfile.txt` renvoie : 
+```
+root@spark-master:/home# hdfs fsck hdfs://spark-master:54310/input/bigfile.txt
+Connecting to namenode via http://spark-master:9870/fsck?ugi=root&path=%2Finput%2Fbigfile.txt
+FSCK started by root (auth:SIMPLE) from /172.20.0.2 for path /input/bigfile.txt at Tue Feb 07 14:52:29 GMT 2023
 
+
+Status: HEALTHY
+ Number of data-nodes:	5
+ Number of racks:		1
+ Total dirs:			0
+ Total symlinks:		0
+
+Replicated Blocks:
+ Total size:	13541700000 B
+ Total files:	1
+ Total blocks (validated):	101 (avg. block size 134076237 B)
+ Minimally replicated blocks:	101 (100.0 %)
+ Over-replicated blocks:	0 (0.0 %)
+ Under-replicated blocks:	0 (0.0 %)
+ Mis-replicated blocks:		0 (0.0 %)
+ Default replication factor:	2
+ Average block replication:	2.0
+ Missing blocks:		0
+ Corrupt blocks:		0
+ Missing replicas:		0 (0.0 %)
+ Blocks queued for replication:	0
+
+Erasure Coded Block Groups:
+ Total size:	0 B
+ Total files:	0
+ Total block groups (validated):	0
+ Minimally erasure-coded block groups:	0
+ Over-erasure-coded block groups:	0
+ Under-erasure-coded block groups:	0
+ Unsatisfactory placement block groups:	0
+ Average block group size:	0.0
+ Missing block groups:		0
+ Corrupt block groups:		0
+ Missing internal blocks:	0
+ Blocks queued for replication:	0
+FSCK ended at Tue Feb 07 14:52:29 GMT 2023 in 19 milliseconds
+
+
+The filesystem under path '/input/bigfile.txt' is HEALTHY
+```
 Le script char_count.py est lancé avec la commande  
 ```$ spark-submit --master spark://spark-master:7077 /ressources/char_count.py```.
 Le résultat est sauvegardé dans le dossier `ressources/outputTrue`.
 # Scénarios de panne
 ## Panne d'un Datanode  
 Le caintainer `spark-worker1` est arrêté avec la commande ```$ docker compose stop spark-worker1```.
-La commande ```$ hdfs dfsadmin -report``` donne le même résultat qu'initialement. Le datanode associé au spark-worker1 est toujours présent dans le rapport.  
+Les commandes ```$ hdfs dfsadmin -report``` et ```hdfs fsck hdfs://spark-master:54310/input/bigfile.txt``` donnent les mêmes résultats qu'initialement. Le datanode associé au spark-worker1 est toujours présent dans le rapport.  
 Après l'arrêt du datanode, le script est relancé. Le résultat est sauvegardé dans le dossier `ressources/outputDatanodeDown`.  
 Le résultat est le même que précédemment. La réplication des données a fonctionné normalement.  
 ## Panne d'un Spark Worker
