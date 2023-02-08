@@ -26,5 +26,5 @@ ENV SPARK_HOME=/opt/spark
 ENV PATH=$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin
 ENV PYSPARK_PYTHON=/usr/bin/python3
 COPY ssh/authorized_keys /root/.ssh/authorized_keys
-ENTRYPOINT bash -c "service ssh start && start-worker.sh spark://spark-master:7077 && tail -f /dev/null"
+ENTRYPOINT bash -c "service ssh start && tail -f /dev/null"
 #ENTRYPOINT bash -c "start-worker.sh spark://spark-master:7077 && tail -f /dev/null"
