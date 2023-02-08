@@ -31,6 +31,7 @@ Ce projet a pour but de tester différents scénarios de panne sur un cluster Sp
 ```$ docker-compose ps```
 * Se connecter au master :  
 ```$ docker-compose exec -it master bash```
+* Le script `start-infra.sh` permet de lancer le Master, les Workers et de démarrer HDFS.
 * S'assurer que le cluster est bien lancé :  
 ```$ jps```
 * Accéder à l'interface web de Spark : http://172.20.0.2:8080
